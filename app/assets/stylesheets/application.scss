@@ -4,6 +4,12 @@
 @import "font-awesome";
 @import 'bootstrap-datetimepicker';
 
+.frontpage {
+  position: relative;
+  top: 50%;
+  transform: translateY(+65%);
+}
+
 body {
   margin-left: 2%;
   margin-right: 2%;
@@ -11,6 +17,12 @@ body {
 h1 {
   font-family: 'Roboto';
 }
+
+.bg {
+  height: 60%;
+  width: 60%;
+}
+
 
 .container      {
   font-family:'Roboto';

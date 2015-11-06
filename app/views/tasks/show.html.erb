@@ -1,34 +1,32 @@
 <p id="notice"><%= notice %></p>
+<div class="col-md-6 col-md-offset-2">
+  <h1>
+    Task:<strong>
+      <%= @task.name %>
+    </strong>
+  </h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @task.name %>
-</p>
+  <p class="well">
+    <strong>Description:</strong>
+    <%= @task.description %>
+  </p>
 
-<p>
-  <strong>Description:</strong>
-  <%= @task.description %>
-</p>
+  <p>
+    <strong>Prize:</strong>
+    <%= @task.prize %>€
+  </p>
 
-<p>
-  <strong>Prize:</strong>
-  <%= @task.prize %>
-</p>
-
-<p>
-  <strong>User:</strong>
-  <%= @task.user_id %>
-</p>
-
-<p>
-  <strong>Deadline:</strong>
-  <%= @task.deadline %>
-</p>
-
-<p>
-  <strong>Status:</strong>
-  <%= @task.status %>
-</p>
-
-<%= link_to 'Edit', edit_task_path(@task) %> |
-<%= link_to 'Back', tasks_path %>
+  <p>
+    <strong>Deadline:</strong>
+    <%= @task.deadline %>
+  </p>
+  <div class="group">
+    <span class="highlight"></span>
+    <span class="bar"></span>
+    <% form_tag '/tasks/#{@task.id}/submit' do %>
+      <%=label_tag 'Github link' %>
+      <%=text_field_tag 'link'%>
+      <div><%= submit_tag 'Submit' %></div>
+    <% end %>
+  </div>
+</div>
