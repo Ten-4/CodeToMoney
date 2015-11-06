@@ -1,4 +1,5 @@
 require 'tmpdir'
+require 'open3'
 
 def judge(base_repo, solution_repo)
   Dir.mktmpdir do |dir|
@@ -17,7 +18,9 @@ end
 
 def run_tests_py(base_dir, sol_dir)
   Dir.chdir(sol_dir) do
-    system({"PYTHONPATH" => base_dir}, 'nosetests2', '-P') or raise("Failed tests")
+    out, err, status = Open3.capture3({"PYTHONPATH" => base_dir}, 'nosetests2', '-P')
+    puts "Test output", err
+    return status == 0
   end
 end
 
