@@ -1,0 +1,68 @@
+
+<%= form_for(@task) do |f| %>
+  <% if @task.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@task.errors.count, "error") %> prohibited this task from being saved:</h2>
+
+      <ul>
+      <% @task.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<div class="container">
+  <h1> Create a task</h1>
+  <br>
+  <br>
+  <div class="group">
+    <%= f.text_field :name %>
+    <span class="highlight"></span>
+    <span class="bar"></span>
+    <label>Name</label>
+  </div>
+  <div class="group">
+  <p style="color:#5264AE">Description</p>
+    <%= f.text_area :description, size: "50x8" %>
+    <span class="highlight"></span>
+    <span class="bar"></span>
+  </div>
+  <div class="group">
+    <%= f.number_field :prize, step:"1000", value:"5000" %>
+    <span class="highlight"></span>
+    <span class="bar"></span>
+    <label>Prize €</label><br>
+  </div>
+  <div class="group">
+    <p style="color:#5264AE">Deadline</p>
+    <div class="row">
+        <div class='col-sm-6'>
+            <div class="form-group">
+                <div class='input-group date' id='datetimepicker1'>
+                    <%= f.text_field :deadline, class:"form-control"%>
+
+                    <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+            $(function () {
+                $('#datetimepicker1').datetimepicker();
+            });
+        </script>
+    </div>
+</div>
+  <div class="group">
+    <%= f.text_field :link %>
+    <span class="highlight"></span>
+    <span class="bar"></span>
+    <label>Github Link</label>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+</div>
+<% end %>

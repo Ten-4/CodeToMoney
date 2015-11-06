@@ -1,0 +1,21 @@
+<p id="notice"><%= notice %></p>
+
+<h1 class="text-center" style="font-family:Ubuntu">All Tasks</h1>
+<br>
+<div class="container-fluid">
+    <% @tasks.each do |task| %>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading clickable">
+          <h3 class="panel-title"><strong><%= link_to task.name, task, style:'color:#161616' %></strong> by <%= link_to task.user.username, task.user %></h3>
+        </div>
+        <div class="panel-body">
+          <%= task.description %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<%= link_to 'New Task', new_task_path, class:"btn btn-default" %>
+
+<br>
