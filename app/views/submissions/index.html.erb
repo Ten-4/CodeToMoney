@@ -1,33 +1,20 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Listing Submissions</h1>
-
-<table>
-  <thead>
-    <tr>
-      <th>Code</th>
-      <th>User</th>
-      <th>Passed</th>
-      <th>Status</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @submissions.each do |submission| %>
-      <tr>
-        <td><%= submission.code %></td>
-        <td><%= submission.user_id %></td>
-        <td><%= submission.passed %></td>
-        <td><%= submission.status %></td>
-        <td><%= link_to 'Show', submission %></td>
-        <td><%= link_to 'Edit', edit_submission_path(submission) %></td>
-        <td><%= link_to 'Destroy', submission, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
+<h1 class="text-center" style="font-family:Ubuntu">Submissions</h1>
 <br>
+<div class="container-fluid">
 
-<%= link_to 'New Submission', new_submission_path %>
+  <% @submissions.each do |s| %>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading clickable">
+          <h3 class="panel-title"><strong><%= link_to s.id, s, style:'color:#161616' %></strong>
+          by <%= link_to s.try(:user).try(:username), s.user %></h3>
+        </div>
+        <div class="panel-body">
+          <%= s.link %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

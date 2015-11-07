@@ -18,15 +18,6 @@ class TasksController < ApplicationController
     render :json => task
   end
 
-  #POST /tasks/:id/submit
-  def submit
-    #run background tasks
-    sub = Submission.create(:task_id => @task.id, :user_id => @task.user.id, :link => :link)
-    rp = RoundPlayer.where(round_id: params[:round_id], user_id: @task.user.id)
-    rp.submission = sub
-    redirect_to '/'
-  end
-
   # GET /tasks/1
   # GET /tasks/1.json
   def show

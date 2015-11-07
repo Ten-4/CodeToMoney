@@ -25,10 +25,17 @@ class SubmissionsController < ApplicationController
   # POST /submissions
   # POST /submissions.json
   def create
-    @submission = Submission.new(submission_params)
+
+    asd = submission_params
+    asd.delete(:round_id)
+    @submission = Submission.new(asd)
     @submission.user = current_user
+
     respond_to do |format|
       if @submission.save
+        rp = RoundPlayer.where(round_id: submission_params[:round_id], user_id: submission_params[:user_id]).first
+        rp.update_attribute(submission_id: @submission.id)
+
         judge_async(@submission)
         format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
@@ -47,6 +54,6 @@ class SubmissionsController < ApplicationController
 
 #    # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:submission).permit(:code, :user_id, :task_id, :round)
+      params.require(:submission).permit(:code, :user_id, :task_id, :round_id)
     end
 end
