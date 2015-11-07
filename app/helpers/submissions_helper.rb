@@ -35,7 +35,7 @@ end
 def run_tests_py(tester, solution)
   File.write('solution.py', solution)
   File.write('test_solution.py', tester)
-  out, err, status = Open3.capture3('nosetests2', 'test_solution.py')
+  out, err, status = Open3.capture3('timeout', '1', 'nosetests2', 'test_solution.py')
   puts "Test output", err
   return status == 0
 end
