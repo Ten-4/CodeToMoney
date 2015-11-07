@@ -34,8 +34,8 @@ class SubmissionsController < ApplicationController
     respond_to do |format|
       if @submission.save
         rp = RoundPlayer.where(round_id: submission_params[:round_id], user_id: submission_params[:user_id]).first
-        rp.update_attribute(submission_id: @submission.id)
-
+        rp.update_attribute(:submission_id, @submission.id)
+        rp.save
         judge_async(@submission)
         format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
