@@ -29,37 +29,16 @@
     <span class="bar"></span>
   </div>
   <div class="group">
-    <%= f.number_field :prize, step:"1000", value:"5000" %>
+  <p style="color:#5264AE">Test code</p>
+    <%= f.text_area :test_code, size: "50x8" %>
     <span class="highlight"></span>
     <span class="bar"></span>
-    <label>Prize €</label><br>
   </div>
   <div class="group">
-    <p style="color:#5264AE">Deadline</p>
-    <div class="row">
-        <div class='col-sm-6'>
-            <div class="form-group">
-                <div class='input-group date' id='datetimepicker1'>
-                    <%= f.text_field :deadline, class:"form-control"%>
-
-                    <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </span>
-                </div>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(function () {
-                $('#datetimepicker1').datetimepicker();
-            });
-        </script>
-    </div>
-</div>
-  <div class="group">
-    <%= f.text_field :link %>
+  <p style="color:#5264AE">Base code</p>
+    <%= f.text_area :base_code, size: "50x8" %>
     <span class="highlight"></span>
     <span class="bar"></span>
-    <label>Github Link</label>
   </div>
   <div class="actions">
     <%= f.submit %>
