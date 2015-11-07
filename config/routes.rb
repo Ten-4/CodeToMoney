@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
-  get 'play' => 'default#poker' 
+  get 'play' => 'default#poker', as: :play
 
   get '/signup' => 'users#new'
   resources :users

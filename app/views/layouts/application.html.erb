@@ -8,11 +8,11 @@
 </head>
 <body>
 
-<nav class="navbar navbar-inverse">
+<nav class="navbar nav-tabs">
   <%= link_to 'CodeEarn', root_path, class: "navbar-brand" %>
-  <%= link_to 'Tasks', tasks_path, class: "btn navbar-btn" %>
   <div class="pull-right">
     <% if current_user %>
+      <%= link_to 'Play', play_path, class: "btn navbar-btn" %>
       <%= link_to 'My account', current_user, class:"btn navbar-btn" %>
       <%= link_to 'Sign out', logout_path, class:"btn navbar-btn" %>
     <% else %>
