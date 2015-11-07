@@ -20,12 +20,19 @@
     <strong>Deadline:</strong>
     <%= @task.deadline %>
   </p>
+  <p>
+    <strong>Github link:</strong>
+    <%= @task.link %>
+  </p>
+
+  <h2>Submit solution</h2>
+
   <div class="group">
     <span class="highlight"></span>
     <span class="bar"></span>
-    <% form_tag '/tasks/#{@task.id}/submit' do %>
-      <%=label_tag 'Github link' %>
+    <%= form_tag "/tasks/#{@task.id}/submit" do %>
       <%=text_field_tag 'link'%>
+      <%=label_tag 'Github link' %>
       <div><%= submit_tag 'Submit' %></div>
     <% end %>
   </div>

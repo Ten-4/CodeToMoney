@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get '/signup' => 'users#new'
   resources :users
   resources :tasks
+  resources :submissions
 
   post '/users' => 'users#create'
   post '/tasks/:id/submit' => 'tasks#submit', as: :submit

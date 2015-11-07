@@ -1,5 +1,5 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :set_task, only: [:show, :edit, :update, :destroy, :submit]
 
   # GET /tasks
   # GET /tasks.json
@@ -9,6 +9,7 @@ class TasksController < ApplicationController
 
   def submit
     #run background tasks
+    sub = Submission.create(:task_id => @task.id, :user_id => @task.user.id, :link => :link)
     redirect_to '/'
   end
 

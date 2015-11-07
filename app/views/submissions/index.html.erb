@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<h1 class="text-center" style="font-family:Ubuntu">Submissions</h1>
+<br>
+<div class="container-fluid">
+
+  <% @submissions.each do |s| %> <% if s.user then %>
+    <div class="col-sm-4">
+      <div class="panel panel-default">
+        <div class="panel-heading clickable">
+          <h3 class="panel-title"><strong><%= link_to s.id, s, style:'color:#161616' %></strong>
+          by <%= link_to s.user.username, s.user %></h3>
+        </div>
+        <div class="panel-body">
+          <%= s.link %>
+        </div>
+      </div>
+    </div>
+  <% end %> <% end %>
+</div>
