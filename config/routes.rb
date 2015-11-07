@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :submissions
   root 'default#index'
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'

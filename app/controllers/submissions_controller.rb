@@ -35,6 +35,6 @@ class SubmissionsController < ApplicationController
 
 #    # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:user, :task, :link)
+      params.require(:user, :code, :user_id, :task_id, :round)
     end
 end
