@@ -11,7 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151107143549) do
+ActiveRecord::Schema.define(version: 20151107164154) do
+
+  create_table "round_players", force: :cascade do |t|
+    t.integer  "round_id"
+    t.integer  "user_id"
+    t.integer  "bet"
+    t.integer  "submission_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  create_table "rounds", force: :cascade do |t|
+    t.datetime "start_time"
+    t.datetime "bet_time"
+    t.datetime "end_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "submissions", force: :cascade do |t|
     t.text     "code"
@@ -20,7 +37,6 @@ ActiveRecord::Schema.define(version: 20151107143549) do
     t.boolean  "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "round"
     t.integer  "task_id"
   end
 

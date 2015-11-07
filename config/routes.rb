@@ -1,15 +1,18 @@
 Rails.application.routes.draw do
+  resources :rounds
   resources :submissions
   root 'default#index'
   get '/login' => 'sessions#new'
   post '/login' => 'sessions#create'
   get '/logout' => 'sessions#destroy'
   get 'play' => 'default#poker', as: :play
-
+  post '/round_players/updatebet' => 'round_players#updateBet'
   get '/signup' => 'users#new'
   resources :users
   resources :tasks
-  resources :submissions
+  resources :round_players
+
+  get 'gettask' => 'tasks#getTask', as: :gettask
 
   post '/users' => 'users#create'
   post '/tasks/:id/submit' => 'tasks#submit', as: :submit

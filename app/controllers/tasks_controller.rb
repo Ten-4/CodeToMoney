@@ -7,9 +7,23 @@ class TasksController < ApplicationController
     @tasks = Task.all
   end
 
+  def getTask
+    id = params[:round_id].to_i % Task.all.count
+    task = Task.where(id: id).first
+
+    while (task == nil) do
+       task = Task.where(id: id+1).first
+       id += 1
+    end
+    render :json => task
+  end
+
+  #POST /tasks/:id/submit
   def submit
     #run background tasks
     sub = Submission.create(:task_id => @task.id, :user_id => @task.user.id, :link => :link)
+    rp = RoundPlayer.where(round_id: params[:round_id], user_id: @task.user.id)
+    rp.submission = sub
     redirect_to '/'
   end
 

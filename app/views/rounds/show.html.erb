@@ -1,0 +1,19 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Start time:</strong>
+  <%= @round.start_time %>
+</p>
+
+<p>
+  <strong>Bet time:</strong>
+  <%= @round.bet_time %>
+</p>
+
+<p>
+  <strong>End time:</strong>
+  <%= @round.end_time %>
+</p>
+
+<%= link_to 'Edit', edit_round_path(@round) %> |
+<%= link_to 'Back', rounds_path %>

@@ -1,7 +1,6 @@
 // Place all the styles related to the Users controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
-
 .container      {
   font-family:'Roboto';
   width:600px;
@@ -10,24 +9,27 @@
   background:#FFF;
   padding:10px 50px 50px;
 }
-h2       {
+
+h2 {
   text-align:center;
   margin-bottom:50px;
 }
+
 h2 small {
   font-weight:normal;
   color:#888;
   display:block;
 }
+
 .footer     { text-align:center; }
 .footer a  { color:#53B2C8; }
 
 /* form starting stylings ------------------------------- */
-.group            {
+.group {
   position:relative;
   margin-bottom:45px;
 }
-input               {
+input {
   font-size:18px;
   padding:10px 10px 10px 5px;
   display:block;
@@ -35,6 +37,7 @@ input               {
   border:none;
   border-bottom:1px solid #757575;
 }
+
 input:focus         { outline:none; }
 
 /* LABEL ======================================= */

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html background=black>
 <link href='https://fonts.googleapis.com/css?family=Raleway|Montserrat|Roboto:400,700' rel='stylesheet' type='text/css'><head>
   <title>CodeEarn̛</title>
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag "application", params[:controller], :media => "all" %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
 </head>
 <body>
 
-<nav class="navbar nav-tabs">
+<nav class="nav navbar-inverse">
   <%= link_to 'CodeEarn', root_path, class: "navbar-brand" %>
   <div class="pull-right">
     <% if current_user %>

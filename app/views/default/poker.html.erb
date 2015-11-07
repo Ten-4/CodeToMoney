@@ -1,9 +1,35 @@
 <meta charset="utf-8">
-<body bgcolor=black>
+<title>CodeCasino</title>
+<img src="assets/junction_5_3.jpg" width=100% height=100% style="">
+<img id="table" style="position:absolute;top:200px;left:300px;" width=600 src="assets/poyta3.png">
+<p id="start" style="color:white;font-size:40;position:absolute;left:100px;top:100px;visibility:hidden">Waiting for players...</p>
+<img id="c1" style="position:absolute;top:150px;left:320px" src="assets/tietokone_pois_paalta2.png" width="150">
+<img id="c2" style="position:absolute;top:150px;left:520px" src="assets/tietokone_pois_paalta2.png" width="150">
+<img id="c3" style="position:absolute;top:150px;left:720px" src="assets/tietokone_pois_paalta2.png" width="150">
+<img id="c4" style="position:absolute;top:370px;left:320px" src="assets/tietokone_pois_paalta2.png" width="150">
+<img id="c5" style="position:absolute;top:370px;left:520px" src="assets/tietokone_pois_paalta2.png" width="150">
+<img id="c6" style="position:absolute;top:370px;left:720px" src="assets/tietokone_pois_paalta2.png" width="150">
+<span id="s1" style="position:absolute;top:150px;left:360px;color:white">sisu<br></span>
+<span id="s2" style="position:absolute;top:150px;left:560px;color:white">Coolness<br></span>
+<span id="s3" style="position:absolute;top:150px;left:760px;color:white">mirchiss<br></span>
+<span id="s4" style="position:absolute;top:460px;left:360px;color:white">sisu<br></span>
+<span id="s5" style="position:absolute;top:460px;left:560px;color:white">sisu<br></span>
+<span id="s6" style="position:absolute;top:460px;left:760px;color:white">sisu<br></span>
+<img id="c1" style="position:absolute;top:250px;left:360px" src="assets/valaistu_koodi.png" width="30">
+<img id="c2" style="position:absolute;top:250px;left:560px" src="assets/valaistu_koodi.png" width="30">
+<img id="c3" style="position:absolute;top:250px;left:760px" src="assets/valaistu_koodi.png" width="30">
+<img id="c4" style="position:absolute;top:350px;left:360px" src="assets/valaistu_koodi.png" width="30">
+<img id="c5" style="position:absolute;top:350px;left:560px" src="assets/valaistu_koodi.png" width="30">
+<img id="c6" style="position:absolute;top:350px;left:760px" src="assets/valaistu_koodi.png" width="30">
+<div id="task" style="position:absolute;top:50px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
+<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
 <script>
 var phase = 0;
 var task = 0;
 var time;
+var maxBet = 100;
+var ownBet = 0;
+var user = <%= current_user.id %>;
 
 function send() {
     hide("task");
@@ -15,20 +41,49 @@ function size() {
     print("size", x.value.length);
 }
 
-function getTask(id) {
-    if (id == 1) {
-        var msg = "Given a positive integer <i>n</i>, calculate the number of prime numbers between 2 and <i>n</i>.";
-        msg += "<hr>Function template:<pre>def prime(n):\n    ...</pre>";
-        msg += "Return value: number of primes between 2 and <i>n</i>";
-        var tmp = "def prime(n):\n";
-        time = 60;
+var players = [];
+var playerName = [];
+var playerBet = [];
+
+function showPlayers() {
+    for (var i = 1; i <= 6; i++) {
+        var x = document.getElementById("c" + i);
+        if (players[i] == 1) x.src = "assets/tietokone_paalla2.png";
+        else x.src = "assets/tietokone_pois_paalta2.png";
+        var x = document.getElementById("s" + i);
+        if (players[i] == 1) x.innerHTML = playerName[i];
+        else x.innerHTML = "--";
     }
+}
+
+function getTask(x) {
+    var msg = x["description"];
+    //var tmp = x["base_code"];
+    alert(x["base_code"]);
+    var tmp = "...";
+    time = 100;
+    /*var msg = "Given a positive integer <i>n</i>, calculate the number of prime numbers between 2 and <i>n</i>.";
+    msg += "<hr>Function template:<pre>def prime(n):\n    ...</pre>";
+    msg += "Return value: number of primes between 2 and <i>n</i>";
+    var tmp = "def prime(n):\n";
+    time = 100;*/
     msg = "<p>" + msg + "</p>";
     msg += "<hr>";
-    msg += "<table><tr valign=top><td><textarea id=\"code\" rows=8 cols=40 onkeyup=\"size()\">" + tmp + "</textarea>";
-    msg += "</td><td><font color=white>Time left: <span id=\"time\">" + time + "</span></font><br><font color=\"white\">Code size: <span id=\"size\">" + tmp.length + "</span></font></td></tr></table>";
-    msg += "<br><button onclick=\"send()\">Send code</button>";
-    return msg;
+    msg += "<table><tr valign=top><td><textarea style=\"color:black;font-family:monospace;font-size:12px;\"id=\"code\" rows=8 cols=40 onkeyup=\"size()\">" + tmp + "</textarea>";
+    msg += "</td><td><font color=white>Time left: <span id=\"time\">" + time + "</span></font><br><!--<font color=\"white\">Code length: <span id=\"size\">" + tmp.length + "</span></font>--></td></tr></table>";
+    msg += "<br><button style=\"color:black\"onclick=\"send()\">Send code</button>";
+    print("task", msg);
+}
+
+function ajaxTask() {
+  $.ajax({
+    url: "/gettask?round_id=" + ownRound,
+    type: "GET",
+    dataType: "json",
+    success: function (data) {
+      getTask(data);
+    }
+  });
 }
 
 function show(id) {
@@ -46,18 +101,56 @@ function print(id, text) {
     x.innerHTML = text;
 }
 
+function bet() {
+    var newBet = parseInt(document.getElementById("newBet").value);
+    if (newBet < maxBet) {
+        alert("Invalid bet!");
+        return;
+    }
+    maxBet = newBet;
+    ownBet = newBet;
+    hide("bet");
+}
+
+function fold() {
+    ownBet = -1;
+    hide("bet");
+}
+
+function createBet() {
+    var bet = "";
+    bet += "Select bet:<br>";
+    bet += "<input style=\"font-color:black\"id=\"newBet\" value=\"" + maxBet + "\">";
+    bet += "<p><button style=\"color:black\" onclick=\"bet()\">Bet</button>";
+    bet += "<button onclick=\"fold()\">Fold</button></p>";
+    print("bet", bet);
+}
+
+var betTime;
+
 function change() {
+    ajaxRounds();
+    ajaxPlayers();
+    showPlayers();
+    if (ownRound == 0) {
+      setTimeout("change()", 1000);
+      return;
+    }
     if (phase == 0) {
         show("start");
         phase = 1;
         setTimeout("change()", 1000);
         return;
     }
+    if (ownStatus == 0) {
+      setTimeout("change()", 1000);
+      return;
+    }
     if (phase == 1) {
         task++;
         var msg = getTask(task);
         hide("start");
-        print("task", msg);
+        ajaxTask();
         show("task");
         phase = 2;
         setTimeout("change()", 1000);
@@ -72,9 +165,104 @@ function change() {
         }
         setTimeout("change()", 1000);
     }
+    if (phase == 3) {
+        if (maxBet > ownBet) {
+            createBet();
+            show("bet");
+        }
+        betTime = 15;
+        phase++;
+        setTimeout("change()", 1000);
+        return;
+    }
+    if (phase == 4) {
+        if (maxBet == ownBet || ownBet == -1) {
+            phase = 5;
+            hide("bet");
+        }
+        betTime--;
+        if (betTime == 0) {
+            ownBet = -1;
+            phase = 5;
+            hide("bet");
+        }
+    }
 }
 
+var ownRound = 0;
+var ownStatus;
+
+function getRounds(x) {
+    if (ownRound == 0) {
+        for (var i = 0; i < x["rounds"].length; i++) {
+          var status = x["rounds"][i]["status"];
+          if (status > 0) continue;
+          ownRound = x["rounds"][i]["round_id"];
+          addPlayer();
+          ownStatus = x["rounds"][i]["status"];
+          break;
+        }
+    } else {
+      for (var i = 0; i < x["rounds"].length; i++) {
+        var round = x["rounds"][i]["round_id"];
+        if (round != ownRound) continue;
+        ownStatus = x["rounds"][i]["status"];
+        break;
+      }
+    }
+}
+
+function ajaxRounds() {
+  $.ajax({
+    url: "/rounds.json",
+    type: "GET",
+    dataType: "json",
+    success: function (data) {
+      getRounds(data);
+    }
+  });
+}
+
+var playerList;
+
+function addPlayer() {
+  $.ajax({
+    url: "/round_players.json",
+    type: "POST",
+    dataType: "json",
+    data: {round_player: {user_id: user, round_id: ownRound, bet: 0}},
+    success: function (data) {
+      getPlayers(data);
+    }
+  });
+}
+
+function getPlayers(x) {
+  var userCount = x["users"].length;
+  for (var i = 0; i < 6; i++) players[i+1] = 0;
+  for (var i = 0; i < userCount; i++) {
+    players[i+1] = 1;
+    playerName[i+1] = x["users"][i]["username"];
+  }
+  for (var i = 0; i < userCount; i++) {
+    playerBet[i+1] = x["round_players"][i]["bet"];
+  }
+}
+
+function ajaxPlayers() {
+  $.ajax({
+    url: "/rounds/" + ownRound + ".json",
+    type: "GET",
+    dataType: "json",
+    success: function (data) {
+      getPlayers(data);
+    }
+  });
+}
+
+for (var i = 1; i <= 6; i++) players[i] = 0;
+ajaxRounds();
+//move("table", 0, 0);
 setTimeout("change()", 1000);
+showPlayers();
 </script>
-<p id="start" style="color:white;font-size:40;text-align:center;visibility:hidden">Round <span id="round">1</span> will start now!</p>
-<div id="task" style="margin-left:100px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
