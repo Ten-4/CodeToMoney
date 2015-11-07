@@ -15,8 +15,8 @@ def judge_git(base_repo, solution_repo)
 end
 
 def judge_local(tester, solution)
-  tester = Pathname(tester).realpath
-  solution = Pathname(solution).realpath
+#  tester = Pathname(tester).realpath
+#  solution = Pathname(solution).realpath
   Dir.mktmpdir do |dir|
     puts "Tmp dir: #{dir}"
     Dir.chdir(dir) do
@@ -38,8 +38,10 @@ def run_tests_git_py(base_dir, sol_dir)
 end
 
 def run_tests_py(tester, solution)
-  FileUtils.cp(solution, 'solution.py')
-  FileUtils.cp(tester, 'test_solution.py')
+  File.write('solution.py', solution)
+  File.write('test_solution.py', tester)
+#  FileUtils.cp(solution, 'solution.py')
+#  FileUtils.cp(tester, 'test_solution.py')
   out, err, status = Open3.capture3('nosetests2', 'test_solution.py')
   puts "Test output", err
   return status == 0

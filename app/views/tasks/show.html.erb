@@ -30,9 +30,10 @@
   <div class="group">
     <span class="highlight"></span>
     <span class="bar"></span>
-    <%= form_tag "/tasks/#{@task.id}/submit" do %>
-      <%=text_field_tag 'link'%>
-      <%=label_tag 'Github link' %>
+    <%= form_for @submission do |f| %>
+      <%= f.hidden_field(:task_id, :value => @task.id) %>
+      <%=f.text_field :code %>
+      <%=f.label 'Code' %>
       <div><%= submit_tag 'Submit' %></div>
     <% end %>
   </div>

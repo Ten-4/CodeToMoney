@@ -25,6 +25,16 @@ class SubmissionsController < ApplicationController
   # POST /submissions.json
   def create
     @submission = Submission.new(submission_params)
+    @submission.user = current_user
+    respond_to do |format|
+      if @submission.save
+        format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
+        format.json { render :show, status: :created, location: @submission }
+      else
+        format.html { render :new }
+        format.json { render json: @submission.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private
@@ -35,6 +45,6 @@ class SubmissionsController < ApplicationController
 
 #    # Never trust parameters from the scary internet, only allow the white list through.
     def submission_params
-      params.require(:user, :code, :user_id, :task_id, :round)
+      params.require(:submission).permit(:code, :user_id, :task_id, :round)
     end
 end
