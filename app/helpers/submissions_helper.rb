@@ -26,8 +26,14 @@ end
 def judge_local(tester, solution)
   Dir.mktmpdir do |dir|
     puts "Tmp dir: #{dir}"
-    Dir.chdir(dir) do
-      run_tests_py(tester, solution)
+    if Open3.capture3('docker', 'info')[2] == 0
+      puts "Running with docker"
+      run_docker_py(tester, solution, dir)
+    else
+      puts "No docker available"
+      Dir.chdir(dir) do
+        run_tests_py(tester, solution)
+      end
     end
   end
 end
@@ -35,7 +41,19 @@ end
 def run_tests_py(tester, solution)
   File.write('solution.py', solution)
   File.write('test_solution.py', tester)
-  out, err, status = Open3.capture3('nosetests2', 'test_solution.py')
+  out, err, status = Open3.capture3('timeout', '1', 'nosetests2', 'test_solution.py')
+  puts "Test output", err
+  return status == 0
+end
+
+def run_docker_py(tester, solution, dir)
+  sol_file = File.join(dir, 'solution.py')
+  test_file = File.join(dir, 'test_solution.py')
+  File.write(sol_file, solution)
+  File.write(test_file, tester)
+  args  = ['timeout', '2', 'docker', 'run', '--memory=256M', '--networking=false', '-v', dir + ':/judge:ro', 'cc_judge']
+  puts args.join(" ")
+  out, err, status = Open3.capture3(*args)
   puts "Test output", err
   return status == 0
 end
