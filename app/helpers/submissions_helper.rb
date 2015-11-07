@@ -26,9 +26,10 @@ end
 def judge_local(tester, solution)
   Dir.mktmpdir do |dir|
     puts "Tmp dir: #{dir}"
-    Dir.chdir(dir) do
-      run_tests_py(tester, solution)
-    end
+#    Dir.chdir(dir) do
+#      run_tests_py(tester, solution)
+#    end
+    run_docker_py(tester, solution, dir)
   end
 end
 
@@ -45,7 +46,7 @@ def run_docker_py(tester, solution, dir)
   test_file = File.join(dir, 'test_solution.py')
   File.write(sol_file, solution)
   File.write(test_file, tester)
-  out, err, status = Open3.capture3('timeout', '2', 'docker' 'run', '--memory=256M', '--networking=false', '-v', dir + ':/judge', 'cc_judge')
+  out, err, status = Open3.capture3('timeout', '2', 'docker', 'run', '--memory=256M', '--networking=false', '-v', dir + ':/judge', 'cc_judge')
   puts "Test output", err
   return status == 0
 end
