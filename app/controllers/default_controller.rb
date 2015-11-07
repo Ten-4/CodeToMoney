@@ -1,5 +1,8 @@
 class DefaultController < ApplicationController
   def index
-    render 'default/index'
   end
+
+  def poker
+  end
+
 end

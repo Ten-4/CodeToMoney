@@ -1,0 +1,80 @@
+<meta charset="utf-8">
+<body bgcolor=black>
+<script>
+var phase = 0;
+var task = 0;
+var time;
+
+function send() {
+    hide("task");
+    phase = 3;
+}
+
+function size() {
+    var x = document.getElementById("code");
+    print("size", x.value.length);
+}
+
+function getTask(id) {
+    if (id == 1) {
+        var msg = "Given a positive integer <i>n</i>, calculate the number of prime numbers between 2 and <i>n</i>.";
+        msg += "<hr>Function template:<pre>def prime(n):\n    ...</pre>";
+        msg += "Return value: number of primes between 2 and <i>n</i>";
+        var tmp = "def prime(n):\n";
+        time = 60;
+    }
+    msg = "<p>" + msg + "</p>";
+    msg += "<hr>";
+    msg += "<table><tr valign=top><td><textarea id=\"code\" rows=8 cols=40 onkeyup=\"size()\">" + tmp + "</textarea>";
+    msg += "</td><td><font color=white>Time left: <span id=\"time\">" + time + "</span></font><br><font color=\"white\">Code size: <span id=\"size\">" + tmp.length + "</span></font></td></tr></table>";
+    msg += "<br><button onclick=\"send()\">Send code</button>";
+    return msg;
+}
+
+function show(id) {
+    var x = document.getElementById(id);
+    x.style.visibility = "visible";
+}
+
+function hide(id) {
+    var x = document.getElementById(id);
+    x.style.visibility = "hidden";
+}
+
+function print(id, text) {
+    var x = document.getElementById(id);
+    x.innerHTML = text;
+}
+
+function change() {
+    if (phase == 0) {
+        show("start");
+        phase = 1;
+        setTimeout("change()", 1000);
+        return;
+    }
+    if (phase == 1) {
+        task++;
+        var msg = getTask(task);
+        hide("start");
+        print("task", msg);
+        show("task");
+        phase = 2;
+        setTimeout("change()", 1000);
+        return;
+    }
+    if (phase == 2) {
+        time--;
+        print("time", time);
+        if (time == 0) {
+            hide("task");
+            phase = 3;
+        }
+        setTimeout("change()", 1000);
+    }
+}
+
+setTimeout("change()", 1000);
+</script>
+<p id="start" style="color:white;font-size:40;text-align:center;visibility:hidden">Round <span id="round">1</span> will start now!</p>
+<div id="task" style="margin-left:100px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
