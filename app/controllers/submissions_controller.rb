@@ -1,4 +1,5 @@
 class SubmissionsController < ApplicationController
+  include SubmissionsHelper
   before_action :set_submission, only: [:show]
 
   # GET /submissions
@@ -28,6 +29,7 @@ class SubmissionsController < ApplicationController
     @submission.user = current_user
     respond_to do |format|
       if @submission.save
+        judge_async(@submission)
         format.html { redirect_to @submission, notice: 'Submission was successfully created.' }
         format.json { render :show, status: :created, location: @submission }
       else
