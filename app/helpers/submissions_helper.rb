@@ -26,10 +26,15 @@ end
 def judge_local(tester, solution)
   Dir.mktmpdir do |dir|
     puts "Tmp dir: #{dir}"
-#    Dir.chdir(dir) do
-#      run_tests_py(tester, solution)
-#    end
-    run_docker_py(tester, solution, dir)
+    if Open3.capture3('docker', 'info')[2] == 0
+      puts "Running with docker"
+      run_docker_py(tester, solution, dir)
+    else
+      puts "No docker available"
+      Dir.chdir(dir) do
+        run_tests_py(tester, solution)
+      end
+    end
   end
 end
 
