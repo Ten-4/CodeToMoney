@@ -51,7 +51,9 @@ def run_docker_py(tester, solution, dir)
   test_file = File.join(dir, 'test_solution.py')
   File.write(sol_file, solution)
   File.write(test_file, tester)
-  out, err, status = Open3.capture3('timeout', '2', 'docker', 'run', '--memory=256M', '--networking=false', '-v', dir + ':/judge', 'cc_judge')
+  args  = ['timeout', '2', 'docker', 'run', '--memory=256M', '--networking=false', '-v', dir + ':/judge:ro', 'cc_judge']
+  puts args.join(" ")
+  out, err, status = Open3.capture3(*args)
   puts "Test output", err
   return status == 0
 end
