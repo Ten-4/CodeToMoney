@@ -8,7 +8,9 @@ class TasksController < ApplicationController
   end
 
   def getTask
-    id = params[:round_id].to_i % Task.all.count
+    ids = Task.all.pluck(:id)
+    id = ids[params[:round_id].to_i % ids.size]
+#    id = params[:round_id].to_i % Task.all.count
     task = Task.where(id: id).first
 
     while (task == nil) do

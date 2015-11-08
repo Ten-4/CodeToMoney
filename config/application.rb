@@ -22,5 +22,21 @@ module Junction
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+    config.after_initialize do
+      Thread.new do
+        while true
+          time = Time.now
+          puts "     MAKE ROUND " + time.to_s
+          puts "     TOTAL COUNT " + Round.all.count.to_s
+          puts "     REMOVE COUNT " + Round.where("start_time < ?", time - 600).count.to_s
+          Round.where("start_time < ?", time - 600).destroy_all
+          r = Round.new
+          r.start_time = time + 15
+          r.save
+          sleep 15
+        end
+      end
+    end
   end
 end

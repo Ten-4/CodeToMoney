@@ -5,6 +5,8 @@ class RoundsController < ApplicationController
   # GET /rounds.json
   def index
     @rounds = Round.all
+    @joined_ids = RoundPlayer.where(user_id: current_user.id).pluck(:round_id)
+#    @user_rounds = Round.find(ids)
   end
 
   # GET /rounds/1
