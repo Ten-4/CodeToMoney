@@ -378,6 +378,11 @@ function getPlayers(x) {
 
     round = x["round_players"][i];
     playerBet[i+1] = round["bet"];
+
+    if (playerBet[i+1] > 0) {
+      playerName[i+1] += " (" + playerBet[i+1] + "$)";
+    }
+
     maxBet = Math.max(maxBet, playerBet[i+1]);
     var hasSubmit = round["submission_id"] > 0;
     submitOk[i+1] = hasSubmit && round["submission"]!=null && round["submission"]["passed"];
