@@ -39,6 +39,8 @@
     <button style="color:black" onclick="fold()">Fold</button></p>
   <div>
 </div>
+<div id="results" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px"></div>
+<div id="time" style="position:absolute;top:400px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
 <script>
 var PHASE_START = "WAITING";
 var PHASE_CODE = "CODING";
@@ -69,9 +71,11 @@ function size() {
     print("size", x.value.length);
 }
 
+var userCount = 6;
 var players = [];
 var playerName = [];
 var playerBet = [];
+var submitOk = [];
 var submitDone = false;
 
 function showPlayers() {
@@ -83,6 +87,21 @@ function showPlayers() {
         if (players[i] == 1) x.innerHTML = playerName[i];
         else x.innerHTML = "--";
     }
+}
+function showResults() {
+  res = "";
+  res += "Results<br/><table><tr><td>User</td><td>Bet</td><td>Code OK</td></tr>";
+  for(var i=1; i<=userCount; ++i) {
+    res += "<tr><td>";
+    res += playerName[i];
+    res += "</td><td>";
+    res += playerBet[i];
+    res += "</td><td>";
+    res += submitOk[i];
+    res += "</td></tr>";
+  }
+  res += "</table>";
+  print("results", res);
 }
 
 function getTask(x) {
@@ -198,10 +217,15 @@ function drawPhase() {
       createCall();
     }
     return "call";
+  } else if (phase == PHASE_RESULTS) {
+    if (phase != prevPhase) {
+      showResults();
+    }
+    return "results";
   }
 }
 
-var PHASE_COMPONENTS = ["start", "task", "bet", "call"];
+var PHASE_COMPONENTS = ["start", "task", "bet", "call", "results"];
 
 function change() {
   ajaxRounds();
@@ -253,13 +277,22 @@ function setPhase(y) {
 
 function getRounds(x) {
   var closest = null;
+  var previous = null;
   for (var i = 0; i < x["rounds"].length; i++) {
     var y = x["rounds"][i];
     var time = y["time"];
     var startTime = y["start_time"];
 
     var endTime = startTime + TIME_ROUND;
-    if (time > endTime) continue;
+    if (time > endTime) {
+      if (y["joined"]) {
+      /*
+        if (!closest || x["rounds"][previous]["time"] < y.time) {
+        }
+        */
+      }
+      continue;
+    }
     if (y["joined"]) {
       setPhase(y);
       return;
@@ -308,7 +341,7 @@ function joinRound() {
 }
 
 function getPlayers(x) {
-  var userCount = x["users"].length;
+  userCount = x["users"].length;
   resetPlayers();
   maxBet = 0;
   for (var i = 0; i < userCount; i++) {
@@ -318,8 +351,10 @@ function getPlayers(x) {
     round = x["round_players"][i];
     playerBet[i+1] = round["bet"];
     maxBet = Math.max(maxBet, playerBet[i+1]);
+    var hasSubmit = round["submission_id"] > 0;
+    submitOk[i+1] = hasSubmit && round["submission"]!=null && round["submission"]["passed"];
     if (round["user_id"] == user) {
-      submitDone = round["submission_id"] > 0;
+      submitDone = hasSubmit;
       ownBet = round["bet"];
     }
   }
