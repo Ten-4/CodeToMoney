@@ -9,6 +9,11 @@ class RoundsController < ApplicationController
 #    @user_rounds = Round.find(ids)
   end
 
+  def newround
+    Round.create(start_time: Time.now+60)
+    redirect_to root_path
+  end
+
   # GET /rounds/1
   # GET /rounds/1.json
   def show

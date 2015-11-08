@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   resources :users
   resources :tasks
   resources :round_players
-
+  get 'newround' => 'rounds#newround', as: :newround
   get 'gettask' => 'tasks#getTask', as: :gettask
 
   post '/users' => 'users#create'
