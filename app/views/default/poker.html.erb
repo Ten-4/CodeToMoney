@@ -90,18 +90,30 @@ function showResults() {
   res = "";
   res += "Results<br/><table border=1><tr><td>User</td><td>Bet</td><td>Code OK</td></tr>";
   console.log("uc: "+userCount);
+  var sum = 0;
+  var winner = "";
+  var count = 0;
   for(var i=1; i<=userCount; ++i) {
     res += "<tr><td>";
     res += playerName[i];
     res += "</td><td>";
     res += playerBet[i];
+    if (playerBet[i] > 0) sum += playerBet[i];
     res += "</td><td>";
     res += submitOk[i];
+    if (submitOk[i]) {
+      count++;
+      if (count == 1) winner = playerName[i];
+      else winner += ", " + playerName[i];
+    }
     res += "</td></tr>";
   }
   res += "</table>";
   console.log(res);
   print("results", res);
+  if (count == 0) alert("No winners =/");
+  if (count == 1) alert("Winner: " + winner + "\nPrize: " + sum + "$")
+  if (count > 1) alert("Winners: " + winner + "\nPrize: " + parseInt(sum/count) + "$")
 }
 
 function getTask(x) {
