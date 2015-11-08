@@ -4,6 +4,12 @@
 @import "font-awesome";
 @import 'bootstrap-datetimepicker';
 
+.navbar-default {
+    background-color: white;
+    border-color: white;
+    opacity: 0.7;
+}
+
 .frontpage {
   position: relative;
   top: 50%;
