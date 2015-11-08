@@ -142,8 +142,7 @@ function print(id, text) {
 function makeBet() {
   var newBet = parseInt(document.getElementById("newBet").value);
   if (newBet < maxBet) {
-    alert("Invalid bet!");
-    return;
+    newBet = maxBet;
   }
   maxBet = newBet;
   ownBet = newBet;
@@ -356,6 +355,7 @@ function submitBet(bet) {
 //      getPlayers(data);
     }
   });
+  hide("bet");
 }
 
 function ajaxPlayers() {
