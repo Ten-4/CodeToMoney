@@ -21,24 +21,24 @@
 <img id="c4" style="position:absolute;top:350px;left:360px" src="assets/valaistu_koodi.png" width="30">
 <img id="c5" style="position:absolute;top:350px;left:560px" src="assets/valaistu_koodi.png" width="30">
 <img id="c6" style="position:absolute;top:350px;left:760px" src="assets/valaistu_koodi.png" width="30">
-<div id="task" style="position:absolute;top:50px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol1</div>
-<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
+<div id="task" style="position:absolute;top:100px;left:350px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol1</div>
+<div id="time" style="position:absolute;top:50px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
+<div id="bet" style="position:absolute;top:500px;left:350px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
   Select bet
   <br>
-  <input style="font-color:black" id="newBet" value="">
+  <input style="color:black" id="newBet" value="">
   <p><button style="color:black" onclick="makeBet()">Bet</button>
-  <button onclick="fold()">Fold</button></p>
+  <button style="color:black" onclick="fold()">Fold</button></p>
 </div>
-<div id="call" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
+<div id="call" style="position:absolute;top:500px;left:350px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
   Call/Fold
   <br>
   <p>Raise: <div id="raiseValue">0</div></p>
   <div id="callfold">
     <p><button style="color:black" onclick="makeBet()">Call</button>
-    <button onclick="fold()">Fold</button></p>
+    <button style="color:black" onclick="fold()">Fold</button></p>
   <div>
 </div>
-<div id="time" style="position:absolute;top:400px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
 <script>
 var PHASE_START = "WAITING";
 var PHASE_CODE = "CODING";
@@ -154,7 +154,7 @@ function makeBet() {
 function fold() {
   ownBet = -1;
   submitBet(ownBet);
-//  hide("bet");
+  hide("bet");
 }
 
 function createBet() {
