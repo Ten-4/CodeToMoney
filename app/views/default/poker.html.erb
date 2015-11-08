@@ -61,7 +61,6 @@ var phaseTime;
 var maxBet = 100;
 var ownBet = 0;
 var user = <%= current_user.id %>;
-var oldMessage;
 
 function send() {
     submitCode();
@@ -91,7 +90,7 @@ function showPlayers() {
 }
 function showResults() {
   res = "";
-  res += "Results<br/><table border=1><tr><td>User</td><td>Bet</td><td>Code OK</td></tr>";
+  res += "Results<br/><table border=1><tr><td>User</td><td>Code OK</td></tr>";
   console.log("uc: "+userCount);
   var sum = 0;
   var winner = "";
@@ -99,8 +98,6 @@ function showResults() {
   for(var i=1; i<=userCount; ++i) {
     res += "<tr><td>";
     res += playerName[i];
-    res += "</td><td>";
-    res += playerBet[i];
     if (playerBet[i] > 0) sum += playerBet[i];
     res += "</td><td>";
     res += submitOk[i];
@@ -112,17 +109,14 @@ function showResults() {
     res += "</td></tr>";
   }
   res += "</table>";
+  if (count == 0) res += "No winners =/";
+  if (count == 1) res += "Winner: " + winner + "\nPrize: " + sum + "$";
+  if (count > 1) res += "Winners: " + winner + "\nPrize: " + parseInt(sum/count) + "$";
   console.log(res);
   print("results", res);
-  if (oldMessage) return;
-  oldMessage = true;
-  if (count == 0) alert("No winners =/");
-  if (count == 1) alert("Winner: " + winner + "\nPrize: " + sum + "$")
-  if (count > 1) alert("Winners: " + winner + "\nPrize: " + parseInt(sum/count) + "$")
 }
 
 function getTask(x) {
-    oldMessage = false;
     task = x["id"];
     var msg = x["description"];
     //var tmp = x["base_code"];
