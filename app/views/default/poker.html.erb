@@ -165,13 +165,19 @@ function makeBet() {
   maxBet = newBet;
   ownBet = newBet;
   submitBet(ownBet);
-//  hide("bet");
+  hide("bet");
+}
+
+function makeCall() {
+  makeBet();
+  hide("callfold");
 }
 
 function fold() {
   ownBet = -1;
   submitBet(ownBet);
   hide("bet");
+  hide("callfold");
 }
 
 function createBet() {
@@ -187,16 +193,7 @@ function createBet() {
 }
 function createCall() {
   document.getElementById("raiseValue").innerHTML = maxBet;
-  $.ajax({
-    url: "/round_players/updatebet",
-    type: "POST",
-    dataType: "json",
-    data: {submission: {user_id: user, round_id: ownRound, bet: maxBet}},
-    success: function (data) {
-    }
-  });
-
-  hide("callfold");
+  show("callfold");
 }
 
 var prevPhase = null;
