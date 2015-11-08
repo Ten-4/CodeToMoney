@@ -169,11 +169,16 @@ function createBet() {
 }
 function createCall() {
   document.getElementById("raiseValue").innerHTML = maxBet;
-  if (ownBet < maxBet) {
-    show("callfold");
-  } else {
-    hide("callfold");
-  }
+  $.ajax({
+    url: "/round_players/updatebet",
+    type: "POST",
+    dataType: "json",
+    data: {submission: {user_id: user, round_id: ownRound, bet: maxBet}},
+    success: function (data) {
+    }
+  });
+
+  hide("callfold");
 }
 
 var prevPhase = null;
