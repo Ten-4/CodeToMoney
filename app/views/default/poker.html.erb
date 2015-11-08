@@ -39,7 +39,7 @@
     <button style="color:black" onclick="fold()">Fold</button></p>
   <div>
 </div>
-<div id="results" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px"></div>
+<div id="results" style="position:absolute;top:100px;left:350px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol1</div>
 <script>
 var PHASE_START = "WAITING";
 var PHASE_CODE = "CODING";
@@ -62,7 +62,6 @@ var user = <%= current_user.id %>;
 
 function send() {
     submitCode();
-    phase = 3;
 }
 
 function size() {
@@ -89,7 +88,8 @@ function showPlayers() {
 }
 function showResults() {
   res = "";
-  res += "Results<br/><table><tr><td>User</td><td>Bet</td><td>Code OK</td></tr>";
+  res += "Results<br/><table border=1><tr><td>User</td><td>Bet</td><td>Code OK</td></tr>";
+  console.log("uc: "+userCount);
   for(var i=1; i<=userCount; ++i) {
     res += "<tr><td>";
     res += playerName[i];
@@ -100,6 +100,7 @@ function showResults() {
     res += "</td></tr>";
   }
   res += "</table>";
+  console.log(res);
   print("results", res);
 }
 
@@ -219,9 +220,7 @@ function drawPhase() {
     }
     return "call";
   } else if (phase == PHASE_RESULTS) {
-    if (phase != prevPhase) {
-      showResults();
-    }
+    showResults();
     return "results";
   }
 }
@@ -240,6 +239,7 @@ function change() {
     for(var i=0; i<PHASE_COMPONENTS.length; ++i) {
       var c = PHASE_COMPONENTS[i];
       if (c == visible) {
+        console.log("showing " + c);
         show(c);
       } else {
         hide(c);
@@ -264,7 +264,7 @@ function choosePhase(time) {
   if (time < TIME_CODE) return [PHASE_CODE, TIME_CODE - time];
   if (time < TIME_CODE + TIME_BET) return [PHASE_BET, TIME_CODE + TIME_BET - time];
   if (time < TIME_CODE + TIME_BET + TIME_CALL) return [PHASE_CALL, TIME_CODE + TIME_BET + TIME_CALL - time];
-  return PHASE_RESULTS;
+  return [PHASE_RESULTS, 0];
 }
 
 function setPhase(y) {
@@ -273,6 +273,9 @@ function setPhase(y) {
   ownRound = y["round_id"];
   arr = choosePhase(time - startTime);
   phase = arr[0];
+  if (phase != prevPhase) {
+    console.log("Entering phase " + phase);
+  }
   phaseTime = arr[1];
 }
 
@@ -287,10 +290,9 @@ function getRounds(x) {
     var endTime = startTime + TIME_ROUND;
     if (time > endTime) {
       if (y["joined"]) {
-      /*
-        if (!closest || x["rounds"][previous]["time"] < y.time) {
+        if (!previous || time > x["rounds"][previous]["time"]) {
+          previous = i;
         }
-        */
       }
       continue;
     }
@@ -299,19 +301,22 @@ function getRounds(x) {
       return;
     }
     if (time < startTime) {
-      if (!closest || x["rounds"][closest]["time"] < y.time) {
+      if (!closest || time < x["rounds"][closest]["time"]) {
         closest = i;
       }
       continue;
     }
   }
-  if (closest == null) {
-    ownRound = 0;
-    phase = 0;
-  } else {
+  if (closest != null) {
     var y = x["rounds"][closest];
     setPhase(y);
     joinRound();
+  } else if (previous != null) {
+    var y = x["rounds"][previous];
+    setPhase(y);
+  } else {
+    ownRound = 0;
+    phase = 0;
   }
 }
 
