@@ -13,7 +13,8 @@ class RoundsController < ApplicationController
   # GET /rounds/1.json
   def show
     respond_to do |format|
-      format.json { render json: @round.to_json(:include => [:users, :round_players]) }
+#      format.json { render json: @round.to_json(:include => [:users, :round_players]) }
+      format.json { render :json => @round.to_json(:include => {:round_players => {:include => :submission}, :users => {}}) }
       format.html {redirect_to '/'}
     end
   end
