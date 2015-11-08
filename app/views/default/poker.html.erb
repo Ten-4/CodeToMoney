@@ -169,7 +169,7 @@ function createBet() {
   */
 }
 function createCall() {
-  document.getElementById("raiseValue").value = maxBet;
+  document.getElementById("raiseValue").innerHTML = maxBet;
   if (ownBet < maxBet) {
     show("callfold");
   } else {
