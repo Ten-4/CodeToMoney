@@ -26,8 +26,17 @@
   Select bet
   <br>
   <input style="font-color:black" id="newBet" value="">
-  <p><button style="color:black" onclick="bet()">Bet</button>
+  <p><button style="color:black" onclick="makeBet()">Bet</button>
   <button onclick="fold()">Fold</button></p>
+</div>
+<div id="call" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
+  Call/Fold
+  <br>
+  <p>Raise: <div id="raiseValue">0</div></p>
+  <div id="callfold">
+    <p><button style="color:black" onclick="makeBet()">Call</button>
+    <button onclick="fold()">Fold</button></p>
+  <div>
 </div>
 <div id="time" style="position:absolute;top:400px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
 <script>
@@ -130,7 +139,7 @@ function print(id, text) {
   x.innerHTML = text;
 }
 
-function bet() {
+function makeBet() {
   var newBet = parseInt(document.getElementById("newBet").value);
   if (newBet < maxBet) {
     alert("Invalid bet!");
@@ -138,12 +147,14 @@ function bet() {
   }
   maxBet = newBet;
   ownBet = newBet;
-  hide("bet");
+  submitBet(ownBet);
+//  hide("bet");
 }
 
 function fold() {
   ownBet = -1;
-  hide("bet");
+  submitBet(ownBet);
+//  hide("bet");
 }
 
 function createBet() {
@@ -156,6 +167,14 @@ function createBet() {
   bet += "<button onclick=\"fold()\">Fold</button></p>";
   print("bet", bet);
   */
+}
+function createCall() {
+  document.getElementById("raiseValue").value = maxBet;
+  if (ownBet < maxBet) {
+    show("callfold");
+  } else {
+    hide("callfold");
+  }
 }
 
 var prevPhase = null;
@@ -173,14 +192,17 @@ function drawPhase() {
     }
     if (phase != prevPhase) {
       createBet();
-      }
+    }
     return "bet";
   } else if (phase == PHASE_CALL) {
-    return "";
+    if (phase != prevPhase) {
+      createCall();
+    }
+    return "call";
   }
 }
 
-var PHASE_COMPONENTS = ["start", "task", "bet"];
+var PHASE_COMPONENTS = ["start", "task", "bet", "call"];
 
 function change() {
   ajaxRounds();
@@ -197,6 +219,9 @@ function change() {
         show(c);
       } else {
         hide(c);
+        if (c=="call") {
+          hide("callfold");
+        }
       }
     }
     }
@@ -286,17 +311,20 @@ function joinRound() {
 function getPlayers(x) {
   var userCount = x["users"].length;
   resetPlayers();
+  maxBet = 0;
   for (var i = 0; i < userCount; i++) {
     players[i+1] = 1;
     playerName[i+1] = x["users"][i]["username"];
 
     round = x["round_players"][i];
     playerBet[i+1] = round["bet"];
+    maxBet = Math.max(maxBet, playerBet[i+1]);
     if (round["user_id"] == user) {
       submitDone = round["submission_id"] > 0;
       ownBet = round["bet"];
     }
   }
+  maxBet = Math.max(maxBet, 100);
 }
 function resetPlayers() {
   for (var i = 0; i < 6; i++) {
@@ -312,6 +340,18 @@ function submitCode() {
     type: "POST",
     dataType: "json",
     data: {submission: {task_id: task, user_id: user, round_id: ownRound, code: document.getElementById("code").value}},
+    success: function (data) {
+//      getPlayers(data);
+    }
+  });
+}
+function submitBet(bet) {
+  console.log("Submitting bet " + bet);
+  $.ajax({
+    url: "/round_players/updatebet",
+    type: "POST",
+    dataType: "json",
+    data: {submission: {user_id: user, round_id: ownRound, bet: bet}},
     success: function (data) {
 //      getPlayers(data);
     }

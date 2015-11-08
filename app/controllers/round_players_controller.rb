@@ -15,8 +15,10 @@ class RoundPlayersController < ApplicationController
   end
 
   def updateBet
-    rp = RoundPlayer.where(user_id: params[:user_id], round_id: params[:round_id])
-    rp.bet = params[:bet]
+    sub = params[:submission]
+    rp = RoundPlayer.where(user_id: sub[:user_id], round_id: sub[:round_id]).first
+#    rp = RoundPlayer.find(round_player_params[:round_player_id])
+    rp.update_attribute(:bet, sub[:bet])
     rp.save
     redirect_to '/'
   end
