@@ -22,7 +22,13 @@
 <img id="c5" style="position:absolute;top:350px;left:560px" src="assets/valaistu_koodi.png" width="30">
 <img id="c6" style="position:absolute;top:350px;left:760px" src="assets/valaistu_koodi.png" width="30">
 <div id="task" style="position:absolute;top:50px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol1</div>
-<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol2</div>
+<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">
+  Select bet
+  <br>
+  <input style="font-color:black" id="newBet" value="">
+  <p><button style="color:black" onclick="bet()">Bet</button>
+  <button onclick="fold()">Fold</button></p>
+</div>
 <div id="time" style="position:absolute;top:400px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
 <script>
 var PHASE_START = "WAITING";
@@ -141,25 +147,33 @@ function fold() {
 }
 
 function createBet() {
+  document.getElementById("newBet").value = maxBet;
+  /*
   var bet = "";
   bet += "Select bet:<br>";
-  bet += "<input style=\"font-color:black\"id=\"newBet\" value=\"" + maxBet + "\">";
+  bet += "<input style=\"font-color:black color:black\" id=\"newBet\" value=\"" + maxBet + "\">";
   bet += "<p><button style=\"color:black\" onclick=\"bet()\">Bet</button>";
   bet += "<button onclick=\"fold()\">Fold</button></p>";
   print("bet", bet);
+  */
 }
 
+var prevPhase = null;
 function drawPhase() {
   if (phase == PHASE_START) {
     return "start";
   } else if (phase == PHASE_CODE) {
-    ajaxTask();
+    if (phase != prevPhase) {
+      ajaxTask();
+    }
     return "task";
   } else if (phase == PHASE_BET) {
     if (ownBet != 0) {
       return "";
     }
-    createBet();
+    if (phase != prevPhase) {
+      createBet();
+      }
     return "bet";
   } else if (phase == PHASE_CALL) {
     return "";
@@ -176,14 +190,17 @@ function change() {
   if (ownRound==0) return;
 
   var visible = drawPhase();
-  for(var i=0; i<PHASE_COMPONENTS.length; ++i) {
-    var c = PHASE_COMPONENTS[i];
-    if (c == visible) {
-      show(c);
-    } else {
-      hide(c);
+  if (phase != prevPhase) {
+    for(var i=0; i<PHASE_COMPONENTS.length; ++i) {
+      var c = PHASE_COMPONENTS[i];
+      if (c == visible) {
+        show(c);
+      } else {
+        hide(c);
+      }
     }
-  }
+    }
+  prevPhase = phase;
 }
 
 var ownRound = 0;
