@@ -21,10 +21,23 @@
 <img id="c4" style="position:absolute;top:350px;left:360px" src="assets/valaistu_koodi.png" width="30">
 <img id="c5" style="position:absolute;top:350px;left:560px" src="assets/valaistu_koodi.png" width="30">
 <img id="c6" style="position:absolute;top:350px;left:760px" src="assets/valaistu_koodi.png" width="30">
-<div id="task" style="position:absolute;top:50px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
-<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol</div>
+<div id="task" style="position:absolute;top:50px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol1</div>
+<div id="bet" style="position:absolute;top:500px;left:210px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:hidden;font-size:18px">lol2</div>
+<div id="time" style="position:absolute;top:400px;left:810px;width:500px;border-style:solid;border-color:white;border-style:solid;background:#555555;color:white;padding:5px 5px 5px 5px;visibility:visible;font-size:18px">time</div>
 <script>
-var phase = 0;
+var PHASE_START = "WAITING";
+var PHASE_CODE = "CODING";
+var PHASE_BET = "BETTING";
+var PHASE_CALL = "CALLING";
+var PHASE_RESULTS = "RESULTS";
+
+var TIME_CODE = 60;
+var TIME_BET = 15;
+var TIME_CALL = 15;
+
+var TIME_ROUND = TIME_CODE + TIME_BET + TIME_CALL;
+
+var phase = PHASE_START;
 var task = 0;
 var phaseTime;
 var maxBet = 100;
@@ -32,7 +45,6 @@ var ownBet = 0;
 var user = <%= current_user.id %>;
 
 function send() {
-    hide("task");
     submitCode();
     phase = 3;
 }
@@ -45,6 +57,7 @@ function size() {
 var players = [];
 var playerName = [];
 var playerBet = [];
+var submitDone = false;
 
 function showPlayers() {
     for (var i = 1; i <= 6; i++) {
@@ -62,7 +75,7 @@ function getTask(x) {
     var msg = x["description"];
     //var tmp = x["base_code"];
     var tmp = x["base_code"];
-    phaseTime = 100;
+//    phaseTime = 100;
     /*var msg = "Given a positive integer <i>n</i>, calculate the number of prime numbers between 2 and <i>n</i>.";
     msg += "<hr>Function template:<pre>def prime(n):\n    ...</pre>";
     msg += "Return value: number of primes between 2 and <i>n</i>";
@@ -70,9 +83,18 @@ function getTask(x) {
     phaseTime = 100;*/
     msg = "<p>" + msg + "</p>";
     msg += "<hr>";
-    msg += "<table><tr valign=top><td><textarea style=\"color:black;font-family:monospace;font-size:12px;\"id=\"code\" rows=8 cols=40 onkeyup=\"size()\">" + tmp + "</textarea>";
-    msg += "</td><td><font color=white>Time left: <span id=\"time\">" + phaseTime + "</span></font><br><!--<font color=\"white\">Code length: <span id=\"size\">" + tmp.length + "</span></font>--></td></tr></table>";
-    msg += "<br><button style=\"color:black\"onclick=\"send()\">Send code</button>";
+    if (submitDone) {
+      msg += "<p>Submitted</p>"
+    } else {
+      msg += "<table><tr valign=top><td><textarea style=\"color:black;font-family:monospace;font-size:12px;\"id=\"code\" rows=8 cols=40 onkeyup=\"size()\">" + tmp + "</textarea>";
+      msg += "</td>";
+//      msg += "<td>";
+//      msg += "<font color=white>Time left: <span id=\"time\">" + phaseTime + "</span></font><br>";
+ //     msg += "<!--<font color=\"white\">Code length: <span id=\"size\">" + tmp.length + "</span></font>-->";
+//      msg += "</td>
+      msg += "</tr></table>";
+      msg += "<br><button style=\"color:black\"onclick=\"send()\">Send code</button>";
+    }
     print("task", msg);
 }
 
@@ -127,32 +149,17 @@ function createBet() {
   print("bet", bet);
 }
 
-var betTime;
-
-var PHASE_START = 0;
-var PHASE_CODE = 1;
-var PHASE_CODE_DONE = 2;
-var PHASE_BET = 3;
-var PHASE_CALL = 4;
-var PHASE_RESULTS = 5;
-
-var TIME_CODE = 60;
-var TIME_BET = 15;
-var TIME_CALL = 15;
-
-var TIME_ROUND = TIME_CODE + TIME_BET + TIME_CALL;
-
 function drawPhase() {
   if (phase == PHASE_START) {
     return "start";
   } else if (phase == PHASE_CODE) {
-    task++;
-    hide("start");
     ajaxTask();
     return "task";
-  } else if (phase == PHASE_CODE_DONE) {
-    print("time", phaseTime);
   } else if (phase == PHASE_BET) {
+    if (ownBet != 0) {
+      return "";
+    }
+    createBet();
     return "bet";
   } else if (phase == PHASE_CALL) {
     return "";
@@ -165,6 +172,7 @@ function change() {
   ajaxRounds();
   ajaxPlayers();
   showPlayers();
+  print("time", Math.round(phaseTime) + " s left in phase " + phase);
   if (ownRound==0) return;
 
   var visible = drawPhase();
@@ -181,7 +189,12 @@ function change() {
 var ownRound = 0;
 
 function choosePhase(time) {
-  if (time < 0) return [PHASE_START, -time];
+  if (time < 0) {
+    submitDone = false;
+    print("task", "")
+    ownBet = 0;
+    return [PHASE_START, -time];
+  }
   if (time < TIME_CODE) return [PHASE_CODE, TIME_CODE - time];
   if (time < TIME_CODE + TIME_BET) return [PHASE_BET, TIME_CODE + TIME_BET - time];
   if (time < TIME_CODE + TIME_BET + TIME_CALL) return [PHASE_CALL, TIME_CODE + TIME_BET + TIME_CALL - time];
@@ -259,7 +272,13 @@ function getPlayers(x) {
   for (var i = 0; i < userCount; i++) {
     players[i+1] = 1;
     playerName[i+1] = x["users"][i]["username"];
-    playerBet[i+1] = x["round_players"][i]["bet"];
+
+    round = x["round_players"][i];
+    playerBet[i+1] = round["bet"];
+    if (round["user_id"] == user) {
+      submitDone = round["submission_id"] > 0;
+      ownBet = round["bet"];
+    }
   }
 }
 function resetPlayers() {
@@ -270,6 +289,7 @@ function resetPlayers() {
 }
 
 function submitCode() {
+  submitDone = true;
   $.ajax({
     url: "/submissions",
     type: "POST",
