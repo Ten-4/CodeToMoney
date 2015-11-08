@@ -2,4 +2,4 @@
 
 cd /judge
 
-timeout 1 nosetests-2.7 test_solution.py
+timeout 5 nosetests-2.7 test_solution.py
